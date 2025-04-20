@@ -7,28 +7,16 @@ import type {
 } from 'microcms-js-sdk';
 import { notFound } from 'next/navigation';
 
-// タグの型定義
-export type Tag = {
-  name: string;
-} & MicroCMSContentId &
-  MicroCMSDate;
-
-// ライターの型定義
-export type Writer = {
-  name: string;
-  profile: string;
-  image?: MicroCMSImage;
-} & MicroCMSContentId &
-  MicroCMSDate;
-
-// ブログの型定義
 export type Blog = {
   title: string;
-  description: string;
   content: string;
+  song: Song;
   thumbnail?: MicroCMSImage;
-  tags?: Tag[];
-  writer?: Writer;
+};
+
+export type Song = {
+  trackId: string;
+  embedHtml: string;
 };
 
 export type Article = Blog & MicroCMSContentId & MicroCMSDate;
@@ -63,31 +51,6 @@ export const getDetail = async (contentId: string, queries?: MicroCMSQueries) =>
   const detailData = await client
     .getListDetail<Blog>({
       endpoint: 'blog',
-      contentId,
-      queries,
-    })
-    .catch(notFound);
-
-  return detailData;
-};
-
-// タグの一覧を取得
-export const getTagList = async (queries?: MicroCMSQueries) => {
-  const listData = await client
-    .getList<Tag>({
-      endpoint: 'tags',
-      queries,
-    })
-    .catch(notFound);
-
-  return listData;
-};
-
-// タグの詳細を取得
-export const getTag = async (contentId: string, queries?: MicroCMSQueries) => {
-  const detailData = await client
-    .getListDetail<Tag>({
-      endpoint: 'tags',
       contentId,
       queries,
     })
